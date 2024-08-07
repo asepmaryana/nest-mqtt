@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  nestapi:
+    container_name: nestapi
+    build: .
+    command: npm run start:prod
+    # Uncomment below lines only if you are developing. 
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
+    ports:
+      - 3001:3001
+    networks:
+      - mqtttest
+    environment:
+      - env
+      - connectUrl
+      - connectTimeout
+      - username
+      - password
+      - reconnectPeriod
+    restart: always
+  
+  mqtt-broker:
+    image: eclipse-mosquitto
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+    networks:
+      - mqtttest
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+networks:
+  mqtttest:
+    name: mqtttest
+volumes:
+  data: ~
